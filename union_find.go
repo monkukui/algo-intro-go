@@ -9,14 +9,17 @@ import (
 )
 
 type UnionFind struct {
-	n    int
-	par  []int
-	size []int
+	n    int   // 頂点の数
+	par  []int // 親の頂点番号。根の場合は -1
+	size []int // 部分木のサイズ
 }
 
 func NewUnionFind(n int) *UnionFind {
 	par := make([]int, n)
 	size := make([]int, n)
+
+	// 初期化
+	// 始め、全ての頂点は根であり、サイズは 1 である
 	for i := 0; i < n; i++ {
 		par[i] = -1
 		size[i] = 1
@@ -29,10 +32,13 @@ func NewUnionFind(n int) *UnionFind {
 }
 
 func (u *UnionFind) Size(x int) int {
+	// 部分木のサイズを返す
 	return u.size[x]
 }
 
 func (u *UnionFind) Find(x int) int {
+
+	// 根まで上に辿っていく
 	for u.par[x] != -1 {
 		x = u.par[x]
 	}
@@ -42,13 +48,18 @@ func (u *UnionFind) Find(x int) int {
 func (u *UnionFind) Union(x, y int) {
 	x = u.Find(x)
 	y = u.Find(y)
+	// すでに同じグループなら、何もしない
 	if x == y {
 		return
 	}
+
+	// サイズが小さい方から大きい方にマージする
 	if x < y {
 		x, y = y, x
 	}
+	// 根に辺を貼る
 	u.par[y] = x
+	// サイズを計算しなおす
 	u.size[x] += u.size[y]
 }
 
